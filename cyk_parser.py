@@ -17,6 +17,7 @@ drive.mount('/content/drive')
 
 """### Part (a)"""
 
+# returns lines of a file as an array of strings
 def getLines(file):
     with open(file) as f:
         lines = f.read()
@@ -24,6 +25,7 @@ def getLines(file):
     
         return lines
 
+# returns only the rules in the form A -> b
 def getUnitRules(lines):
     rules = []
     for line in lines:
@@ -33,6 +35,7 @@ def getUnitRules(lines):
     
     return rules
 
+# returns only the rules in the form A -> BC
 def getThreeRules(lines):
     rules = []
     for line in lines:
@@ -42,6 +45,7 @@ def getThreeRules(lines):
 
     return rules
 
+# returns all parse trees for the given sentence
 def getTrees(sentence, rules):
     words = sentence.split()
     n = len(words)
@@ -50,12 +54,14 @@ def getTrees(sentence, rules):
     unit_rules = getUnitRules(rules)
     three_rules = getThreeRules(rules)
 
+    # get tags for each of the sentence words
     for i in range(n):
         for unit_rule in unit_rules:
             terms = unit_rule.split()
             if terms[1] == words[i]:
                 table[i][i].append(Node(terms[0]))
 
+    # CYK algorithm
     l = 1
     while l <= n - 1:
         i = 0
@@ -82,7 +88,7 @@ def getTrees(sentence, rules):
             i += 1
         l += 1
 
-
+    # print all parses
     parents = table[n-1][0]
     #print(table)
     print("Number of Parses: {}".format(len(parents)))
@@ -93,6 +99,7 @@ def getTrees(sentence, rules):
 
 """### Part (b)"""
 
+# returns rules in chomsky normal form
 def chomsky(lines):
     var_num = 0
     i = 0
@@ -134,12 +141,12 @@ def chomsky(lines):
             lines.remove(lines[i])
             i -= 1
         i += 1
-
-    #print(lines)
+        
     return lines
 
 """### Part (c)"""
 
+# print parse treees for each sentence in 3-1.txt
 rules = chomsky(getLines('/content/drive/My Drive/3-1b.txt'))
 sentences = getLines('/content/drive/My Drive/3-1c.txt')
 for sentence in sentences:
@@ -147,6 +154,7 @@ for sentence in sentences:
 
 """### Part (d)"""
 
+# for those sentences who do not parse completely, return the longest sub-parse
 def getLongestPartial(table):
     base = Node("")
     for nodes in table:
@@ -169,6 +177,7 @@ for sentence in sentences:
 
 """### Part (e)"""
 
+# change rules such that the parser will not parse ungrammatical sentences
 def changeRules(rules):
     i = 0
 
